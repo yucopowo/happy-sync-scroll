@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+
+    <style>
+        html,body{
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .container{
+            display: flex;
+            height: 100%;
+            overflow: hidden;
+        }
+        .panel{
+            overflow-y: auto;
+        }
+        .left-panel{
+            background-color: rgba(166, 0, 187, 0.3);
+            width: 59%;
+        }
+        .right-panel{
+            width: 59%;
+            background-color: rgba(0, 0, 204, 0.3);
+        }
+
+        .item{
+            height: 50px;
+            line-height: 50px;
+            box-sizing: border-box;
+            border-top: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+
+
+<div class="container">
+
+    <div class="panel left-panel" id="left-panel">
+    </div>
+    <div class="panel right-panel" id="right-panel">
+    </div>
+
+</div>
+
+
+<script>
+    /*!
+ * MoveTo - A lightweight scroll animation javascript library without any dependency.
+ * Version 1.8.0 (14-01-2019 13:15)
+ * Licensed under MIT
+ * Copyright 2019 Hasan Aydoğdu <hsnaydd@gmail.com>
+ */
+
+    'use strict';
+    var MoveTo = function () {
+        /**
+         * Defaults
+         * @type {object}
+         */
+        var defaults = {
+            tolerance: 0,
+            // duration: 800,
+            duration: 50,
+            easing: 'easeOutQuart',
+            container: window,
+            callback: function callback() {} };
+
+
+        /**
+         * easeOutQuart Easing Function
+         * @param  {number} t - current time
+         * @param  {number} b - start value
+         * @param  {number} c - change in value
+         * @param  {number} d - duration
+         * @return {number} - calculated value
+         */
+        function easeOutQuart(t, b, c, d) {
+            t /= d;
+            t--;
+            return -c * (t * t * t * t - 1) + b;
+        }
+
+        /**
+         * Merge two object
+         *
+         * @param  {object} obj1
+         * @param  {object} obj2
+         * @return {object} merged object
+         */
+        function mergeObject(obj1, obj2) {
+            var obj3 = {};
+            Object.keys(obj1).forEach(function (propertyName) {
+                obj3[propertyName] = obj1[propertyName];
+            });
+
+            Object.keys(obj2).forEach(function (propertyName) {
+                obj3[propertyName] = obj2[propertyName];
+            });
+            return obj3;
+        };
+
+        /**
+         * Converts camel case to kebab case
+         * @param  {string} val the value to be converted
+         * @return {string} the converted value
+         */
+        function kebabCase(val) {
+            return val.replace(/([A-Z])/g, function ($1) {
+                return '-' + $1.toLowerCase();
+            });
+        };
+
+        /**
+         * Count a number of item scrolled top
+         * @param  {Window|HTMLElement} container
+         * @return {number}
+         */
+        function countScrollTop(container) {
+            if (container instanceof HTMLElement) {
+                return container.scrollTop;
+            }
+            return container.pageYOffset;
+        };
+
+        /**
+         * MoveTo Constructor
+         * @param {object} options Options
+         * @param {object} easeFunctions Custom ease functions
+         */
+        function MoveTo() {var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};var easeFunctions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+            this.options = mergeObject(defaults, options);
+            this.easeFunctions = mergeObject({ easeOutQuart: easeOutQuart }, easeFunctions);
+        }
+
+        /**
+         * Register a dom element as trigger
+         * @param  {HTMLElement} dom Dom trigger element
+         * @param  {function} callback Callback function
+         * @return {function|void} unregister function
+         */
+        MoveTo.prototype.registerTrigger = function (dom, callback) {var _this = this;
+            if (!dom) {
+                return;
+            }
+
+            var href = dom.getAttribute('href') || dom.getAttribute('data-target');
+            // The element to be scrolled
+            var target = href && href !== '#' ?
+                document.getElementById(href.substring(1)) :
+                document.body;
+            var options = mergeObject(this.options, _getOptionsFromTriggerDom(dom, this.options));
+
+            if (typeof callback === 'function') {
+                options.callback = callback;
+            }
+
+            var listener = function listener(e) {
+                e.preventDefault();
+                _this.move(target, options);
+            };
+
+            dom.addEventListener('click', listener, false);
+
+            return function () {return dom.removeEventListener('click', listener, false);};
+        };
+
+        /**
+         * Move
+         * Scrolls to given element by using easeOutQuart function
+         * @param  {HTMLElement|number} target Target element to be scrolled or target position
+         * @param  {object} options Custom options
+         */
+        MoveTo.prototype.move = function (target) {var _this2 = this;var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+            if (target !== 0 && !target) {
+                return;
+            }
+
+            options = mergeObject(this.options, options);
+
+            // debugger
+            // var distance = typeof target === 'number' ? target : target.getBoundingClientRect().top;
+            // var distance = 0;
+            var getBoundingClientRect = target.getBoundingClientRect();
+            var distance = typeof target === 'number' ? target : (getBoundingClientRect.top - getBoundingClientRect.height);
+
+
+            var from = countScrollTop(options.container);
+            var startTime = null;
+            var lastYOffset = void 0;
+            distance -= options.tolerance;
+
+            // rAF loop
+            var loop = function loop(currentTime) {
+                var currentYOffset = countScrollTop(_this2.options.container);
+
+                if (!startTime) {
+                    // To starts time from 1, we subtracted 1 from current time
+                    // If time starts from 1 The first loop will not do anything,
+                    // because easing value will be zero
+                    startTime = currentTime - 1;
+                }
+
+                var timeElapsed = currentTime - startTime;
+
+                if (lastYOffset) {
+                    if (
+                        distance > 0 && lastYOffset > currentYOffset ||
+                        distance < 0 && lastYOffset < currentYOffset)
+                    {
+                        return options.callback(target);
+                    }
+                }
+                lastYOffset = currentYOffset;
+
+                var val = _this2.easeFunctions[options.easing](timeElapsed, from, distance, options.duration);
+
+                options.container.scroll(0, val);
+
+                if (timeElapsed < options.duration) {
+                    window.requestAnimationFrame(loop);
+                } else {
+                    options.container.scroll(0, distance + from);
+                    options.callback(target);
+                }
+            };
+
+            window.requestAnimationFrame(loop);
+        };
+
+        /**
+         * Adds custom ease function
+         * @param {string}   name Ease function name
+         * @param {function} fn   Ease function
+         */
+        MoveTo.prototype.addEaseFunction = function (name, fn) {
+            this.easeFunctions[name] = fn;
+        };
+
+        /**
+         * Returns options which created from trigger dom element
+         * @param  {HTMLElement} dom Trigger dom element
+         * @param  {object} options The instance's options
+         * @return {object} The options which created from trigger dom element
+         */
+        function _getOptionsFromTriggerDom(dom, options) {
+            var domOptions = {};
+
+            Object.keys(options).forEach(function (key) {
+                var value = dom.getAttribute('data-mt-' + kebabCase(key));
+                if (value) {
+                    domOptions[key] = isNaN(value) ? value : parseInt(value, 10);
+                }
+            });
+            return domOptions;
+        }
+
+        return MoveTo;
+    }();
+
+</script>
+<script>
+
+    function inViewport(el){
+        var rect = el.getBoundingClientRect();
+        var innerHeight = window.innerHeight || document.documentElement.clientHeight;
+        var innerWidth = window.innerWidth || document.documentElement.clientWidth;
+
+        return rect.top >= 0
+            && rect.left >= 0
+            && rect.bottom <= innerHeight
+            && rect.right <= innerWidth;
+    }
+
+
+    function findDom(root, firstVisibleLine = -1) {
+        const children = root.children;
+        for(let i=0;i<children.length;i++){
+            const dom = children[i];
+
+            if(firstVisibleLine<0) {
+                if(inViewport(dom)){
+                    return dom;
+                }
+            }
+            else {
+                const index = dom.dataset.index;
+                if( firstVisibleLine < index ) {
+                    return dom;
+                }
+            }
+
+
+        }
+        return null;
+    }
+
+
+    (async function () {
+
+        const $left = $('.left-panel');
+        const $right = $('.right-panel');
+
+        var options = { speed: 1000, easing: 'easeOutCubic',
+            offset: function (anchor, toggle) {
+                return 0;
+            },
+        };
+
+        const leftDiv = document.getElementById("left-panel");
+        // const leftScroller = zenscroll.createScroller(leftDiv);
+        // const leftScroller = new SmoothScroll('.left-panel', options);
+        const leftScroller = new MoveTo({
+            container: leftDiv
+        });
+
+        const rightDiv = document.getElementById("right-panel");
+        // const rightScroller = zenscroll.createScroller(rightDiv);
+        // const rightScroller = new SmoothScroll('.right-panel', options);
+        // leftScroller.toY(300);
+        const rightScroller = new MoveTo({
+            container: rightDiv,
+            // tolerance: 50
+        });
+
+        function leftScrollToLine(line, callback) {
+            const dom = findDom(leftDiv, line);
+            if(!dom) return;
+            // leftScroller.to(dom);
+            // leftScroller.animateScroll(dom);
+            leftScroller.move(dom, {
+                callback: callback
+            });
+        }
+
+        function rightScrollToLine(line, callback) {
+            const dom = findDom(rightDiv, line);
+            if(!dom) return;
+            // rightScroller.to(dom);
+            // rightScroller.animateScroll(dom);
+            rightScroller.move(dom, {
+                callback: callback
+            });
+        }
+
+        for(let i=0;i<100;i++){
+            $left.append('<div class="item" data-index="'+i+'">'+i+'</div>');
+            $right.append('<div class="item" data-index="'+i+'">'+i+'</div>');
+        }
+
+        let scrollBecauseOfLeft = false;
+        let scrollBecauseOfRight = false;
+
+
+        let leftScrollNum = 0;
+        let rightScrollNum = 0;
+        $left.on('scroll', function () {
+
+            if(scrollBecauseOfRight){
+                // scrollBecauseOfRight = false;
+                return;
+            }
+
+            console.log('$left scroll');
+            const dom = findDom(leftDiv);
+            if(!dom) return;
+
+
+            // console.log(dom);
+
+            leftScrollNum++;
+
+            scrollBecauseOfLeft = true;
+            const index = parseInt(dom.dataset.index, 10);
+            console.log('$left', index);
+            rightScrollToLine(index, function () {
+                leftScrollNum--;
+
+                if(leftScrollNum <= 0){
+                    leftScrollNum = 0;
+                    console.log('end');
+                    scrollBecauseOfLeft = false;
+                }
+
+            });
+        });
+
+        $right.on('scroll', function () {
+            // console.log('$right scroll');
+            if(scrollBecauseOfLeft){
+                // scrollBecauseOfLeft = false;
+                return;
+            }
+
+
+            const dom = findDom(rightDiv);
+            if(!dom) return;
+
+
+
+            rightScrollNum++;
+
+            scrollBecauseOfRight = true;
+            const index = parseInt(dom.dataset.index, 10);
+            console.log('$right', index);
+            leftScrollToLine(index, function () {
+                rightScrollNum--;
+
+                if(rightScrollNum <= 0){
+                    rightScrollNum = 0;
+                    console.log('end');
+                    scrollBecauseOfRight = false;
+                }
+
+            });
+
+
+
+        });
+
+
+        // setTimeout(function () {
+        //     leftScrollToLine(10);
+        // }, 3000);
+
+
+        // const moveTo = new MoveTo({
+        //     container: leftDiv
+        // });
+        //
+        // const target = document.querySelector('[data-index="20"]');
+        // moveTo.move(target);
+
+
+    })();
+</script>
+
+
+</body>
+</html>
