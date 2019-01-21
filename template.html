@@ -1,0 +1,18 @@
+<div class="container">
+
+    <div class="panel" v-for="panel in panels"
+         :ref="'panel_'+panel.id"
+         :style="{'background-color':panel.backgroundColor}">
+
+        <div class="panel-wrap happy-sync-scroll-wrap">
+
+            <div v-for="(s, index) in 'a'.repeat(100).split('')">{{index}}</div>
+
+
+        </div>
+
+
+
+    </div>
+
+</div>

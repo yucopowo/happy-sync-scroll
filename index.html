@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/jquery.scrollto@2.1.2/jquery.scrollTo.min.js"></script>
+    <script src="//cdn.bootcss.com/vue/2.5.22/vue.js"></script>
 
     <style>
         html,body{
@@ -18,14 +20,30 @@
             overflow: hidden;
         }
         .panel{
+            width: 30%;
             overflow-y: auto;
         }
-        .left-panel{
-            background-color: rgba(166, 0, 187, 0.3);
-            width: 59%;
+        .panel-wrap{
+            overflow-y: auto;
         }
-        .right-panel{
-            width: 59%;
+        #panel0{
+            background-color: rgba(166, 0, 187, 0.3);
+            width: 20%;
+        }
+        #panel1{
+            width: 20%;
+            background-color: rgba(0, 0, 204, 0.3);
+        }
+        #panel2{
+            width: 20%;
+            background-color: rgba(42, 204, 76, 0.3);
+        }
+        #panel3{
+            width: 20%;
+            background-color: rgba(172, 204, 49, 0.3);
+        }
+        #panel4{
+            width: 20%;
             background-color: rgba(0, 0, 204, 0.3);
         }
 
@@ -40,32 +58,30 @@
 <body>
 
 
-<div class="container">
+<!--<div class="container">-->
 
-    <div class="panel left-panel" id="left-panel"></div>
-    <div class="panel right-panel" id="right-panel"></div>
+    <!--<div class="panel" id="panel0">-->
+        <!--<div class="panel-wrap" style="height: 3000px;overflow-y: auto;"></div>-->
+    <!--</div>-->
+    <!--<div class="panel" id="panel1">-->
+        <!--<div class="panel-wrap" style="height: 3000px;overflow-y: auto;"></div>-->
+    <!--</div>-->
+    <!--<div class="panel" id="panel2">-->
+        <!--<div class="panel-wrap" style="height: 3000px;overflow-y: auto;"></div>-->
+    <!--</div>-->
+    <!--<div class="panel" id="panel3">-->
+        <!--<div class="panel-wrap" style="height: 3000px;overflow-y: auto;"></div>-->
+    <!--</div>-->
+    <!--<div class="panel" id="panel4">-->
+        <!--<div class="panel-wrap" style="height: 3000px;overflow-y: auto;"></div>-->
+    <!--</div>-->
 
-</div>
+<!--</div>-->
+
+<div id="app"></div>
 
 <script src="happy-sync-scroll.js"></script>
-
-<script>
-
-
-    (async function () {
-
-
-        const syncScroll = new HappySyncScroll([
-            '#left-panel',
-            '#right-panel'
-        ], {
-
-        });
-
-
-    })();
-</script>
-
+<script src="index.js"></script>
 
 </body>
 </html>
