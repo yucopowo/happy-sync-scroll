@@ -18,6 +18,10 @@
                 {
                     id: 2,
                     backgroundColor: 'rgba(42, 204, 76, 0.3)'
+                },
+                {
+                    id: 3,
+                    backgroundColor: 'rgba(42, 204, 76, 0.3)'
                 }
             ]
         },
