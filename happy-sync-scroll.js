@@ -18,16 +18,55 @@ function inViewport(el){
         && rect.right <= innerWidth;
 }
 
-function scrollTo($container, percent, callback) {
+function findDom($wrap) {
+    let result = null;
+    $wrap.find('.item').each(function (i, el) {
+        // console.log(i, el);
+
+        if(inViewport(el)){
+            result = el;
+            return false;
+        }
+
+    });
+
+    return result;
+}
+
+function scrollTo($container, percent, id, callback) {
+
+
     const $wrap = $container.find('.happy-sync-scroll-wrap');
-    const wrapHeight = $wrap.height();
-    const containerHeight = $container.height();
-    const scrollTop = (percent * (wrapHeight-containerHeight)) / 100;
-    // $container.scrollTop(scrollTop);
-    // $container.stop();
-    $container.scrollTo(scrollTop, {
+
+
+    const target = $wrap.find('[data-id='+(id*2)+']');
+
+    console.log(target);
+    //
+    // if(!target) {
+    //     callback();
+    //     return;
+    // }
+
+    $container.scrollTo(target, {
         onAfter: callback
     });
+
+
+    // if(id){
+    //
+    // }
+    // else{
+    //     const $wrap = $container.find('.happy-sync-scroll-wrap');
+    //     const wrapHeight = $wrap.height();
+    //     const containerHeight = $container.height();
+    //     const scrollTop = (percent * (wrapHeight-containerHeight)) / 100;
+    //     // $container.scrollTop(scrollTop);
+    //     // $container.stop();
+    //     $container.scrollTo(scrollTop, {
+    //         onAfter: callback
+    //     });
+    // }
 }
 
 
@@ -58,6 +97,16 @@ function onScroll(index, $containers, callback) {
 
     const $wrap = $container.find('.happy-sync-scroll-wrap');
 
+    const dom = findDom($wrap);
+
+    if(!dom){
+        return;
+    }
+
+    const id = $(dom).data('id');
+
+
+
     // console.log( $container.height() );
     // console.log( $wrap.height() );
 
@@ -74,11 +123,11 @@ function onScroll(index, $containers, callback) {
 
         scrolling++;
 
-        scrollTo($containers[i], percent, function () {
+        scrollTo($containers[i], percent, id, function () {
             scrolling--;
 
-            // console.log('end');
-            // console.log('scrolling', scrolling);
+            console.log('end');
+            console.log('scrolling', scrolling);
             // $container.data('scrolling', false);
             // scrolling = false;
 

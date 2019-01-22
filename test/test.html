@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+    <script src="jquery.mousewheel.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/jquery.scrollto@2.1.2/jquery.scrollTo.min.js"></script>
+    <script src="//cdn.bootcss.com/vue/2.5.22/vue.js"></script>
+    <style>
+        html,body{
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            /*height: 100%;*/
+        }
+        .container{
+            display: flex;
+            /*height: 100%;*/
+            overflow: hidden;
+            width: 800px;
+            height: 400px;
+            /*background-color: rgba(0, 0, 0, 0.41);*/
+            margin: 0 auto;
+            margin-top: 100px;
+            justify-content: space-between;
+
+        }
+        .panel{
+            width: 40%;
+            overflow-y: auto;
+        }
+        .panel-wrap{
+            overflow-y: auto;
+        }
+        #panel0{
+            background-color: rgba(166, 0, 187, 0.3);
+            width: 20%;
+        }
+        #panel1{
+            width: 20%;
+            background-color: rgba(0, 0, 204, 0.3);
+        }
+        #panel2{
+            width: 20%;
+            background-color: rgba(42, 204, 76, 0.3);
+        }
+        #panel3{
+            width: 20%;
+            background-color: rgba(172, 204, 49, 0.3);
+        }
+        #panel4{
+            width: 20%;
+            background-color: rgba(0, 0, 204, 0.3);
+        }
+
+        .item{
+            height: 50px;
+            line-height: 50px;
+            box-sizing: border-box;
+            border-top: 1px solid black;
+        }
+
+        .left-panel{
+            background-color: rgba(255, 215, 0, 0.31);
+        }
+
+        .right-panel{
+            background-color: rgba(0, 0, 255, 0.37);
+        }
+    </style>
+
+    <script>
+        !function (n, e) {
+             n.store = e()
+        }(window, function () {
+            function n(n) {
+                return n = n || Object.create(null), {
+                    $on: function (e, t) {
+                        (n[e] || (n[e] = [])).push(t)
+                    },
+                    $off: function (e, t) {
+                        n[e] && n[e].splice(n[e].indexOf(t) >>> 0, 1)
+                    },
+                    $emit: function (e, t) {
+                        (n[e] || []).slice().map(function (n) {
+                            n(t)
+                        }), (n["*"] || []).slice().map(function (n) {
+                            n(e, t)
+                        })
+                    }
+                }
+            }
+
+            return n
+        });
+    </script>
+</head>
+<body>
+
+<div class="container">
+    <div class="panel left-panel" id="left">
+
+        <div class="item">0</div>
+        <div class="item">1</div>
+        <div class="item">2</div>
+        <div class="item">3</div>
+        <div class="item">4</div>
+        <div class="item">5</div>
+        <div class="item">6</div>
+        <div class="item">7</div>
+        <div class="item">8</div>
+        <div class="item">9</div>
+        <div class="item">10</div>
+        <div class="item">11</div>
+        <div class="item">12</div>
+        <div class="item">13</div>
+        <div class="item">14</div>
+        <div class="item">15</div>
+        <div class="item">16</div>
+        <div class="item">17</div>
+        <div class="item">18</div>
+        <div class="item">19</div>
+        <div class="item">20</div>
+        <div class="item">21</div>
+        <div class="item">22</div>
+        <div class="item">23</div>
+        <div class="item">24</div>
+        <div class="item">25</div>
+        <div class="item">26</div>
+        <div class="item">27</div>
+        <div class="item">28</div>
+        <div class="item">29</div>
+
+
+
+    </div>
+    <div class="panel right-panel" id="right">
+
+        <div class="item">0</div>
+        <div class="item">1</div>
+        <div class="item">2</div>
+        <div class="item">3</div>
+        <div class="item">4</div>
+        <div class="item">5</div>
+        <div class="item">6</div>
+        <div class="item">7</div>
+        <div class="item">8</div>
+        <div class="item">9</div>
+        <div class="item">10</div>
+        <div class="item">11</div>
+        <div class="item">12</div>
+        <div class="item">13</div>
+        <div class="item">14</div>
+        <div class="item">15</div>
+        <div class="item">16</div>
+        <div class="item">17</div>
+        <div class="item">18</div>
+        <div class="item">19</div>
+        <div class="item">20</div>
+        <div class="item">21</div>
+        <div class="item">22</div>
+        <div class="item">23</div>
+        <div class="item">24</div>
+        <div class="item">25</div>
+        <div class="item">26</div>
+        <div class="item">27</div>
+        <div class="item">28</div>
+        <div class="item">29</div>
+
+    </div>
+</div>
+
+<script>
+
+    $.extend($.scrollTo.defaults, {
+        axis: 'y',
+        duration: 100,
+        interrupt: true
+    });
+
+
+
+    (function () {
+
+        let leftScrollStart = false;
+        let rightScrollStart = false;
+
+
+        $(document).on('sync', function (e, l, r) {
+            leftScrollStart = l;
+            rightScrollStart = r;
+        });
+
+        const leftPanel =  document.getElementById('left');
+
+
+        $('#left').on('scroll', function() {
+
+            if(rightScrollStart) {
+                return;
+            }
+            console.log('left', 'scroll');
+            const scrollTop = leftPanel.scrollTop;
+            $('#right').trigger("scrollTo", [scrollTop]);
+
+        });
+
+        $('#left').on('scrollTo', function (e, scrollTop) {
+            $('#left').stop();
+            $('#left').scrollTo(scrollTop);
+        });
+
+        $('#left').on('mouseover', function () {
+            leftScrollStart = true;
+            rightScrollStart = false;
+
+            console.log('leftScrollStart', leftScrollStart);
+            console.log('rightScrollStart', rightScrollStart);
+
+            $(document).trigger("sync", [leftScrollStart, rightScrollStart]);
+
+        });
+
+
+    })();
+
+    (function () {
+
+        let leftScrollStart = false;
+        let rightScrollStart = false;
+
+        const rightPanel =  document.getElementById('right');
+
+        // let currentScrollStart = 0;
+
+        $(document).on('sync', function (e, l, r) {
+            leftScrollStart = l;
+            rightScrollStart = r;
+        });
+
+        $('#right').on('scroll', function(event) {
+            if(leftScrollStart) {
+                return;
+            }
+            console.log('right', 'scroll');
+            const scrollTop = rightPanel.scrollTop;
+            $('#left').trigger("scrollTo", [scrollTop]);
+        });
+
+
+        $('#right').on('scrollTo', function (e, scrollTop) {
+            $('#right').stop();
+            $('#right').scrollTo(scrollTop);
+        });
+
+        $('#right').on('mouseover', function () {
+            rightScrollStart = true;
+            leftScrollStart = false;
+
+            console.log('leftScrollStart', leftScrollStart);
+            console.log('rightScrollStart', rightScrollStart);
+
+            $(document).trigger("sync", [leftScrollStart, rightScrollStart]);
+
+        });
+
+
+    })();
+
+
+
+
+
+
+
+</script>
+
+</body>
+</html>

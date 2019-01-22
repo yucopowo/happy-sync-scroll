@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="//cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+    <script src="jquery.mousewheel.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/jquery.scrollto@2.1.2/jquery.scrollTo.min.js"></script>
+    <script src="//cdn.bootcss.com/vue/2.5.22/vue.js"></script>
+
+    <style>
+        html,body{
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            /*height: 100%;*/
+        }
+        .container{
+            display: flex;
+            /*height: 100%;*/
+            overflow: hidden;
+            width: 800px;
+            height: 400px;
+            /*background-color: rgba(0, 0, 0, 0.41);*/
+            margin: 0 auto;
+            margin-top: 100px;
+            justify-content: space-between;
+
+        }
+        .panel{
+            width: 40%;
+            overflow-y: auto;
+        }
+        .panel-wrap{
+            overflow-y: auto;
+        }
+        #panel0{
+            background-color: rgba(166, 0, 187, 0.3);
+            width: 20%;
+        }
+        #panel1{
+            width: 20%;
+            background-color: rgba(0, 0, 204, 0.3);
+        }
+        #panel2{
+            width: 20%;
+            background-color: rgba(42, 204, 76, 0.3);
+        }
+        #panel3{
+            width: 20%;
+            background-color: rgba(172, 204, 49, 0.3);
+        }
+        #panel4{
+            width: 20%;
+            background-color: rgba(0, 0, 204, 0.3);
+        }
+
+        .item{
+            height: 50px;
+            line-height: 50px;
+            box-sizing: border-box;
+            border-top: 1px solid black;
+        }
+
+        .left-panel{
+            background-color: rgba(255, 215, 0, 0.31);
+        }
+
+        .right-panel{
+            background-color: rgba(0, 0, 255, 0.37);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="panel left-panel" id="left">
+
+        <div class="item">0</div>
+        <div class="item">1</div>
+        <div class="item">2</div>
+        <div class="item">3</div>
+        <div class="item">4</div>
+        <div class="item">5</div>
+        <div class="item">6</div>
+        <div class="item">7</div>
+        <div class="item">8</div>
+        <div class="item">9</div>
+        <div class="item">10</div>
+        <div class="item">11</div>
+        <div class="item">12</div>
+        <div class="item">13</div>
+        <div class="item">14</div>
+        <div class="item">15</div>
+        <div class="item">16</div>
+        <div class="item">17</div>
+        <div class="item">18</div>
+        <div class="item">19</div>
+        <div class="item">20</div>
+        <div class="item">21</div>
+        <div class="item">22</div>
+        <div class="item">23</div>
+        <div class="item">24</div>
+        <div class="item">25</div>
+        <div class="item">26</div>
+        <div class="item">27</div>
+        <div class="item">28</div>
+        <div class="item">29</div>
+
+
+
+    </div>
+    <div class="panel right-panel" id="right">
+
+        <div class="item">0</div>
+        <div class="item">1</div>
+        <div class="item">2</div>
+        <div class="item">3</div>
+        <div class="item">4</div>
+        <div class="item">5</div>
+        <div class="item">6</div>
+        <div class="item">7</div>
+        <div class="item">8</div>
+        <div class="item">9</div>
+        <div class="item">10</div>
+        <div class="item">11</div>
+        <div class="item">12</div>
+        <div class="item">13</div>
+        <div class="item">14</div>
+        <div class="item">15</div>
+        <div class="item">16</div>
+        <div class="item">17</div>
+        <div class="item">18</div>
+        <div class="item">19</div>
+        <div class="item">20</div>
+        <div class="item">21</div>
+        <div class="item">22</div>
+        <div class="item">23</div>
+        <div class="item">24</div>
+        <div class="item">25</div>
+        <div class="item">26</div>
+        <div class="item">27</div>
+        <div class="item">28</div>
+        <div class="item">29</div>
+
+    </div>
+</div>
+
+<script>
+
+    $.extend($.scrollTo.defaults, {
+        axis: 'y',
+        duration: 1000
+    });
+
+
+
+
+    const leftPanel =  document.getElementById('left');
+    const rightPanel =  document.getElementById('right');
+
+
+    // $('#left').on('mousewheel', function(event) {
+    //     // console.log('left', event.deltaX, event.deltaY, event.deltaFactor);
+    //
+    //     console.log(leftPanel.scrollTop);
+    //
+    //     rightPanel.scrollTop = leftPanel.scrollTop;
+    //
+    //
+    // });
+
+    let leftScrollStart = false;
+    let rightScrollStart = false;
+
+    // function callback() {
+    //     console.log('trigger');
+    // }
+    //
+    // let num = 0;
+    // function assistance(){
+    //
+    //     if(num === 0){
+    //         callback();
+    //     }
+    //
+    //     num += 1;
+    //
+    //     setTimeout(function () {
+    //         num -= 1;
+    //         // if(num === 0 ){
+    //         //     return;
+    //         // }
+    //         // leftScrollStart = false;
+    //         if(num<=0){
+    //             num = 0;
+    //             console.log('end');
+    //             leftScrollStart = false;
+    //             callback();
+    //         }
+    //
+    //     }, 100);
+    //
+    // }
+
+    $('#left').on('scroll', function() {
+
+
+        if(rightScrollStart) {
+            // rightScrollStart = false;
+            return;
+        }
+        console.log('left', 'scroll');
+
+
+        // if(!leftScrollStart) {
+        //     leftScrollStart = true;
+        // }
+
+        // assistance();
+        const scrollTop = leftPanel.scrollTop;
+
+        $('#right').stop();
+        $('#right').scrollTo(scrollTop);
+
+    });
+
+    $('#right').on('scroll', function(event) {
+
+
+        if(leftScrollStart) {
+            // leftScrollStart = false;
+            return;
+        }
+
+        console.log('right', 'scroll');
+
+        const scrollTop = rightPanel.scrollTop;
+
+        $('#left').stop();
+        $('#left').scrollTo(scrollTop);
+
+        // console.log('right', event.deltaX, event.deltaY, event.deltaFactor);
+
+        // console.log(rightPanel.scrollTop)
+        // leftPanel.scrollTop = rightPanel.scrollTop;
+
+
+
+    });
+
+
+    $('#left').on('mouseover', function () {
+        leftScrollStart = true;
+        rightScrollStart = false;
+
+        console.log('leftScrollStart', leftScrollStart);
+        console.log('rightScrollStart', rightScrollStart);
+
+    });
+
+    $('#right').on('mouseover', function () {
+        rightScrollStart = true;
+        leftScrollStart = false;
+
+        console.log('leftScrollStart', leftScrollStart);
+        console.log('rightScrollStart', rightScrollStart);
+    });
+
+
+    // $('#right').on('mousewheel', function(event) {
+    //     // console.log('right', event.deltaX, event.deltaY, event.deltaFactor);
+    //
+    //     // console.log(rightPanel.scrollTop)
+    //     // leftPanel.scrollTop = rightPanel.scrollTop;
+    //
+    //
+    //
+    // });
+
+    // leftPanel.addEventListener('mousewheel',function(){
+    //
+    //     console.log(leftPanel.scrollTop)
+    //
+    // });
+
+
+</script>
+
+</body>
+</html>
